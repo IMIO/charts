@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "imio-plone.fullname" . }}
+  annotations:
+    volume.beta.kubernetes.io/storage-class: cinder-high-speed
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: cinder-high-speed

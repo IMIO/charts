@@ -1,0 +1,69 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "imio-plone.fullname" . }}-instance
+  labels:
+    app.kubernetes.io/name: {{ include "imio-plone.name" . }}
+    helm.sh/chart: {{ include "imio-plone.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.type: {{ .Values.appType }}
+spec:
+  replicas: {{ .Values.replica.instance }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "imio-plone.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "imio-plone.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: ZEO_HOST
+              value: {{ include "imio-plone.fullname" . }}-db.{{ .Release.Namespace }}.svc.cluster.local
+          args: {{ .Values.appContainer.arguments }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: admin-user-volume
+              mountPath: /home/imio/plone/parts/instance/inituser
+              subPath: inituser
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: admin-user-volume
+          projected:
+            sources:
+              - secret:
+                  name: {{ include "imio-plone.fullname" . }}-inituser
+                  items:
+                    - key: inituser
+                      path: inituser

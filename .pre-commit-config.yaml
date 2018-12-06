@@ -1,0 +1,83 @@
+---
+repos:
+  -
+    repo: 'https://github.com/pre-commit/pre-commit-hooks.git'
+    rev: v1.4.0-1
+    hooks:
+      -
+        id: trailing-whitespace
+        stages:
+          - commit
+          - push
+      -
+        id: check-json
+        stages:
+          - commit
+          - push
+      -
+        id: flake8
+        stages:
+          - commit
+          - push
+        exclude: ^bootstrap.py$
+      -
+        id: check-json
+        stages:
+          - commit
+          - push
+      -
+        id: check-merge-conflict
+        stages:
+          - commit
+          - push
+      -
+        id: debug-statements
+        stages:
+          - commit
+          - push
+      -
+        id: fix-encoding-pragma
+        stages:
+          - commit
+          - push
+      -
+        id: check-symlinks
+        stages:
+          - commit
+          - push
+      -
+        id: debug-statements
+        stages:
+          - commit
+          - push
+  -
+    repo: 'https://github.com/jumanjihouse/pre-commit-hooks.git'
+    rev: 1.6.0
+    hooks:
+      -
+        id: shellcheck
+        stages:
+          - commit
+          - push
+      -
+        id: shfmt
+        stages:
+          - commit
+          - push
+  -
+    repo: 'https://github.com/adrienverge/yamllint'
+    rev: 506e066410052c42da36c237b8ba3c661448c86b
+    hooks:
+      -
+        id: yamllint
+        stages:
+          - commit
+          - push
+  -
+    repo: 'https://github.com/jorisroovers/gitlint.git'
+    rev: e4e627dd5b5f1dbc1168782ea6fd9874242fa41a
+    hooks:
+      -
+        id: gitlint
+        stages:
+          - commit-msg

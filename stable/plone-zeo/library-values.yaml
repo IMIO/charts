@@ -1,0 +1,52 @@
+# Default values for library project in imio-plone
+
+replica:
+  db: 1
+  instance: 2
+
+appType: library
+
+image:
+  repository: docker-staging-kube.imio.be/library/mutual
+  tag: latest
+  pullPolicy: IfNotPresent
+
+appContainer:
+  arguments:
+    - "console"
+
+mountPath: /home/imio/plone/var
+
+service:
+  type: NodePort
+  port: 8080
+
+# generate a new inituser using zpasswd.py:
+# $ zpasswd.py -u admin -p yourpassword inituser
+# generate base64 encoded inituser content with:
+# $ echo -n 'REPLACE_ZPASSWD_CONTENT_HERE' | base64
+inituserPassword: YWRtaW46e1NIQX1uNHJGeXZMNkpUd2RzaWw0Z0daaHFCZkwxVTA9
+
+ingress:
+  enabled: true
+  domain: kube.imio.be
+  path: /
+  annotations: {}
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
